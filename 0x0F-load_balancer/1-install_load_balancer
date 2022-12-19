@@ -9,6 +9,6 @@ sudo sed -i 'aENABLED=1\n' /etc/default/haproxy
 
 # Config load balancer with web servers
 sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original
-sudo sed -i "\$a\\\nfrontend 60381-lb-01\n\tbind *:80\n\tmode http\n\tdefault_backend web-backend\nbackend web-backend\n\tbalance roundrobin\n\toption forwardfor\n\tserver 60381-web-01 54.237.210.250:80 check\n\tserver 60381-web-02 100.27.2.54:80 check\n" /etc/haproxy/haproxy.cfg
+sudo sed -i "\$a\\\nfrontend 60381-lb-01 54.90.19.20:80\n\tmode http\n\tdefault_backend web-backend\nbackend web-backend\n\tbalance roundrobin\n\toption forwardfor\n\tserver 60381-web-01 54.237.210.250:80 check\n\tserver 60381-web-02 100.27.2.54:80 check\n" /etc/haproxy/haproxy.cfg
 
 sudo service haproxy start
