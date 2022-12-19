@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
-# Install and configure HAProxy load balancer
-sudo apt-get install --no-install-recommends software-properties-common
-sudo add-apt-repository ppa:vbernat/haproxy-2.6
-sudo apt-get install haproxy=2.6.\*
+# Installs and setup haproxy
 
-# Enable load balancer
-sudo sed -i 'aENABLED=1\n' /etc/default/haproxy
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-1.8
+apt-get -y update
+apt-get install -y haproxy=1.8.\*
 
-# Config load balancer with web servers
-sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original
-sudo sed -i "\$a\\\nfrontend 60381-lb-01\n\tbind *:80\n\tmode http\n\tdefault_backend web-backend\nbackend web-backend\n\tbalance roundrobin\n\toption forwardfor\n\tserver 60381-web-01 54.237.210.250:80 check\n\tserver 60381-web-02 100.27.2.54:80 check\n" /etc/haproxy/haproxy.cfg
+echo "ENABLED=1" > /etc/default/haproxy
 
-sudo service haproxy start
+# Listen to web1 and web2 servers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+echo "
+   listen load_balancer
+   bind *:80
+   mode http
+   balance roundrobin
+   option httpclose
+   option forwardfor
+   server 60381-web-01 54.237.210.250:80 check
+   server 60381-web-01 100.27.2.54:80 check
+" >> /etc/haproxy/haproxy.cfg
+
+service haproxy start
